@@ -15,7 +15,6 @@ def something():
         image_gray = np.array(cv.cvtColor(cv.imread(
             "/home/something/PycharmProjects/multiprocessing-template-matching/Screenshot from 2022-12-22 19-59-11.png"),
                                           cv.COLOR_RGB2GRAY))
-        # a = np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440)))
         b = cv.cvtColor(np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440))), cv.COLOR_RGB2GRAY)
         h1, w1, = image_gray.shape[::-1]
         REGION = 796, 574, 1756, 973
@@ -25,35 +24,25 @@ def something():
             templ=image_gray,
             method=cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-        # print('thread 1', max_val, )
-        # cv.imshow('b', b)
         # print(f'thread one max value:{max_val}')
 
         print(f'max value of thread one: {max_val}')
         if max_val >= 0.95:  # this was 0.79
-
             x1, y2 = (h1 / 2) + max_loc[0], (w1 / 2) + max_loc[1]
             try:
                 pyautogui.moveTo(x=x1, y=y2)
                 del result, min_val, max_val, min_loc, max_loc
-                #event.set()
-                #os.kill(t2, __signal=(exit()))
-
                 break
             except RuntimeError:
                 pass
 
 
-        #event.set()
-
 
 def something2():
     # checker1=z
     # print(processes[0])
-
     while True:
         image_gray = np.array(cv.cvtColor(cv.imread("/home/something/PycharmProjects/multiprocessing-template-matching/Screenshot from 2022-12-22 20-00-56.png"), cv.COLOR_RGB2GRAY))
-        # a = np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440)))
         b = cv.cvtColor(np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440))), cv.COLOR_RGB2GRAY)
         h1, w1, = image_gray.shape[::-1]
         REGION = 796, 574, 1756, 973
@@ -63,16 +52,10 @@ def something2():
             templ=image_gray,
             method=cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-        # print('thread 2',max_val,)
-        # del result
-
         # print(f'thread two max value:{max_val}')
-
         _FINISH = False
         print(f'something2 max value:{max_val}')
-
         if max_val >= 0.98:
-
             pyautogui.FAILSAFE=False
             # print('thread 2 found found the reject window')
             x1, y2 = (h1 / 2) + max_loc[0], (w1 / 2) + max_loc[1]
@@ -83,19 +66,8 @@ def something2():
             except RuntimeError:
                 pass
             del result, min_val, max_val, min_loc, max_loc
-            # return var
-            #test1()
-            #event.set()
-            #t1.kill()
-
-           # os.kill(t1, exit())
-            # exit()
-
             break
-
-
-
-        # gc.collect()
+        gc.collect()
 
 
 def Phase1():
@@ -154,25 +126,17 @@ def Phase1():
     # print(f'thread one status:{t1.is_alive()}')
 #Phase1()
 def testing():
-
-
     while True:
         a = np.array(cv.cvtColor(cv.imread(
             '/home/something/PycharmProjects/multiprocessing-template-matching/Youtube_logo.png'), cv.COLOR_RGB2GRAY))
-        #print(type(a))
         screen = cv.cvtColor(np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440))), cv.COLOR_RGB2GRAY)
         for i in np.arange(0.71,0.01,-0.001):
-            #print(type(a))
             resized = imutils.resize(a, width = int(a.shape[1] * i))
             result = cv.matchTemplate(
                 image=screen,
                 templ=resized,
                 method=cv.TM_CCORR_NORMED)
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-            # print('thread 2',max_val,)
-            # del result
-
-            # print(f'thread two max value:{max_val}')
             _FINISH = False
             print(f'resized image template percentage probability:{max_val}\nScale down value is :{i}')
             if max_val >= 0.96:
@@ -187,18 +151,7 @@ def testing():
                 except RuntimeError:
                     pass
                 del result, min_val, max_val, min_loc, max_loc
-                # return var
-                # test1()
-                # event.set()
-                # t1.kill()
-
-                # os.kill(t1, exit())
-                # exit()
-
                 break
-            #a= cv.imshow('test',resized)
-            #cv.waitKey(0)
-            #time.sleep(5)
             print(i)
         break
 
