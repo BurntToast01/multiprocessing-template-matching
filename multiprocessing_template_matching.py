@@ -1,17 +1,19 @@
 import gc
 import os
 import cv2 as cv
+import numpy
 import pyautogui
 from PIL import ImageGrab, Image
 import numpy as np
 import time
 import multiprocessing
 from multiprocessing import Event
+import imutils
 
 def something():
     while True:
         image_gray = np.array(cv.cvtColor(cv.imread(
-            "/run/media/marcos/8d82f6aa-2fc2-4eb7-ba62-e714d909f394/Old files/PycharmProjects/REDLIGHT_automation/Youtube.png"),
+            "/home/something/PycharmProjects/multiprocessing-template-matching/Screenshot from 2022-12-22 19-59-11.png"),
                                           cv.COLOR_RGB2GRAY))
         # a = np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440)))
         b = cv.cvtColor(np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440))), cv.COLOR_RGB2GRAY)
@@ -26,8 +28,7 @@ def something():
         # print('thread 1', max_val, )
         # cv.imshow('b', b)
         # print(f'thread one max value:{max_val}')
-        while not event:
-            break
+
         print(f'max value of thread one: {max_val}')
         if max_val >= 0.95:  # this was 0.79
 
@@ -35,15 +36,15 @@ def something():
             try:
                 pyautogui.moveTo(x=x1, y=y2)
                 del result, min_val, max_val, min_loc, max_loc
-                event.set()
-                os.kill(t2, __signal=(exit()))
+                #event.set()
+                #os.kill(t2, __signal=(exit()))
 
                 break
             except RuntimeError:
                 pass
-            break
 
-        event.set()
+
+        #event.set()
 
 
 def something2():
@@ -51,7 +52,7 @@ def something2():
     # print(processes[0])
 
     while True:
-        image_gray = np.array(cv.cvtColor(cv.imread("/home/marcos/Pictures/reject_window.png"), cv.COLOR_RGB2GRAY))
+        image_gray = np.array(cv.cvtColor(cv.imread("/home/something/PycharmProjects/multiprocessing-template-matching/Screenshot from 2022-12-22 20-00-56.png"), cv.COLOR_RGB2GRAY))
         # a = np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440)))
         b = cv.cvtColor(np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440))), cv.COLOR_RGB2GRAY)
         h1, w1, = image_gray.shape[::-1]
@@ -84,23 +85,20 @@ def something2():
             del result, min_val, max_val, min_loc, max_loc
             # return var
             #test1()
-            event.set()
+            #event.set()
             #t1.kill()
 
-            os.kill(t1, exit())
+           # os.kill(t1, exit())
             # exit()
 
             break
-        if max_val <= 0.97:
-            break
+
 
 
         # gc.collect()
 
 
-
-if __name__ == "__main__":
-
+def Phase1():
     while True:
 
         event = Event()
@@ -154,3 +152,54 @@ if __name__ == "__main__":
 
     # print(f'thread two status:{t2.is_alive()}')
     # print(f'thread one status:{t1.is_alive()}')
+#Phase1()
+def testing():
+
+
+    while True:
+        a = np.array(cv.cvtColor(cv.imread(
+            '/home/something/PycharmProjects/multiprocessing-template-matching/Youtube_logo.png'), cv.COLOR_RGB2GRAY))
+        #print(type(a))
+        screen = cv.cvtColor(np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440))), cv.COLOR_RGB2GRAY)
+        for i in np.arange(0.71,0.01,-0.001):
+            #print(type(a))
+            resized = imutils.resize(a, width = int(a.shape[1] * i))
+            result = cv.matchTemplate(
+                image=screen,
+                templ=resized,
+                method=cv.TM_CCORR_NORMED)
+            min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+            # print('thread 2',max_val,)
+            # del result
+
+            # print(f'thread two max value:{max_val}')
+            _FINISH = False
+            print(f'resized image template percentage probability:{max_val}\nScale down value is :{i}')
+            if max_val >= 0.96:
+                pyautogui.FAILSAFE = False
+                # print('thread 2 found found the reject window')
+                h1, w1, = resized.shape[::-1]
+                x1, y2 = (h1 / 2) + max_loc[0], (w1 / 2) + max_loc[1]
+                try:
+                    pyautogui.moveTo(x=x1, y=y2)
+                    del result, min_val, max_val, min_loc, max_loc
+                    break
+                except RuntimeError:
+                    pass
+                del result, min_val, max_val, min_loc, max_loc
+                # return var
+                # test1()
+                # event.set()
+                # t1.kill()
+
+                # os.kill(t1, exit())
+                # exit()
+
+                break
+            #a= cv.imshow('test',resized)
+            #cv.waitKey(0)
+            #time.sleep(5)
+            print(i)
+        break
+
+testing()
