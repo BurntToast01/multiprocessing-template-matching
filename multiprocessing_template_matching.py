@@ -124,14 +124,31 @@ def Phase1():
 
     # print(f'thread two status:{t2.is_alive()}')
     # print(f'thread one status:{t1.is_alive()}')
-#Phase1()
+#Phase1()0,
+def screen_shot():
+    #1047,966 1633,1263
+    ImageGrab.grab(bbox=(1040, 963, 1646, 1262)).save("/home/something/PycharmProjects"
+                                                                 "/multiprocessing-template-matching/pyscreen"
+                                                                 ".png")
+    a = np.array(
+        cv.cvtColor(cv.imread("/home/something/PycharmProjects/multiprocessing-template-matching/pyscreen.png"),
+                    cv.COLOR_BGR2GRAY))
 def testing():
+    screen_shot()
+    template_image = cv.imread('/home/something/PycharmProjects/multiprocessing-template-matching/pyscreen.png')
+
+    # Convert the screenshot to a grayscale image that can be used with cv2.matchTemplate
+    template_image_array = np.array(template_image)
+    a = cv.cvtColor(template_image_array, cv.COLOR_RGB2GRAY)
+    #screen_shot()
+
     while True:
         a = np.array(cv.cvtColor(cv.imread(
-            '/home/something/PycharmProjects/multiprocessing-template-matching/Youtube_logo.png'), cv.COLOR_RGB2GRAY))
+            '/home/something/PycharmProjects/multiprocessing-template-matching/pyscreen.png'), cv.COLOR_RGB2GRAY))
         screen = cv.cvtColor(np.array(ImageGrab.grab(bbox=(0, 0, 2560, 1440))), cv.COLOR_RGB2GRAY)
-        for i in np.arange(0.71,0.01,-0.001):
-            resized = imutils.resize(a, width = int(a.shape[1] * i))
+        start= time.time()
+        for i in np.arange(0.0829 ,0.01,-0.001): # np.linspace(0.80,0.01,100): works just fine for this loop
+            resized = cv.resize(a, None, fx=i, fy=i,interpolation=cv.TM_CCORR_NORMED)
             result = cv.matchTemplate(
                 image=screen,
                 templ=resized,
@@ -139,20 +156,38 @@ def testing():
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
             _FINISH = False
             print(f'resized image template percentage probability:{max_val}\nScale down value is :{i}')
-            if max_val >= 0.96:
+            #print(i)
+            #cv.imshow('resized',resized)
+            #cv.waitKey(10)
+            if max_val >= 0.99 or max_val>= 0.96:
                 pyautogui.FAILSAFE = False
                 # print('thread 2 found found the reject window')
                 h1, w1, = resized.shape[::-1]
                 x1, y2 = (h1 / 2) + max_loc[0], (w1 / 2) + max_loc[1]
                 try:
                     pyautogui.moveTo(x=x1, y=y2)
+                    pyautogui.press('ctrl',presses=5)
+                    end = time.time()
+                    final = end - start
+                    print(final)
                     del result, min_val, max_val, min_loc, max_loc
                     break
                 except RuntimeError:
                     pass
                 del result, min_val, max_val, min_loc, max_loc
                 break
-            print(i)
+            if max_val <=0.93:
+                #
+                # h1, w1, = resized.shape[::-1]
+                # x1, y2 = (h1 / 2) + max_loc[0], (w1 / 2) + max_loc[1]
+                # pyautogui.moveTo(x=x1, y=y2,)
+                # pyautogui.press('ctrl')
+                end= time.time()
+                final= end-start
+                if final >=1:
+                    print(final)
+                    break
+                #time.sleep(1)
         break
 
-testing()
+#testing()
